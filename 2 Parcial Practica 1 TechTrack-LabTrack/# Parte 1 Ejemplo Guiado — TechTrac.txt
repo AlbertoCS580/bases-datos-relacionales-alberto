@@ -1,0 +1,55 @@
+# Parte 1: Ejemplo Guiado — TechTrack Pro (Respuestas a Preguntas Guiadas)
+
+Este documento contiene las respuestas a las preguntas guiadas del análisis y diseño del sistema **TechTrack Pro** (Gestión de Activos de TI), correspondientes a la Práctica de Laboratorio de la Unidad 1.
+
+---
+
+### Pregunta Guiada 1
+* **Pregunta:** ¿Por qué es importante separar los roles de Administrador y Técnico de Soporte? ¿Qué riesgos se evitan al no dar privilegios totales a todos los usuarios?
+* **Respuesta:** Permite aplicar el principio de mínimo privilegio. El Administrador gestiona usuarios, políticas y configuraciones globales, mientras que el Técnico se enfoca exclusivamente en operaciones de mantenimiento y soporte diario. Se evitan riesgos críticos como borrados accidentales de bases de datos, modificaciones no autorizadas de inventario sensible o fugas de información confidencial.
+
+### Pregunta Guiada 2
+* **Pregunta:** Menciona al menos dos procesos adicionales que podrían agregarse al sistema para hacerlo más completo (ej. control de licencias de software, ubicación física por oficina, etc.).
+* **Respuesta:** 
+  1. Control y gestión de licencias de software asociadas a los equipos tecnológicos.
+  2. Ubicación física detallada por edificio, piso, sala u oficina dentro de la organización.
+
+### Pregunta Guiada 3
+* **Pregunta:** Observa la matriz. ¿Por qué el Empleado solo tiene acceso al caso de uso UC04 (Consultar asignados)? ¿Qué pasaría si se le permitiera registrar mantenimientos?
+* **Respuesta:** El empleado es un usuario final que solo debe consultar qué equipo tiene bajo su responsabilidad directa. Si se le permitiera registrar mantenimientos, se rompería la seguridad operacional y la trazabilidad, ya que los usuarios comunes no tienen la competencia ni la autorización técnica para certificar intervenciones de hardware.
+
+### Pregunta Guiada 4
+* **Pregunta:** ¿Qué significa la cardinalidad (0..N) entre EQUIPO y MANTENIMIENTO? ¿Puede existir un equipo sin ningún mantenimiento registrado?
+* **Respuesta:** Significa que un equipo puede recibir cero, uno o múltiples mantenimientos a lo largo de su ciclo de vida[cite: 7]. Sí, puede existir un equipo nuevo o recién adquirido que aún no tenga ningún registro de mantenimiento en la bitácora[cite: 7].
+
+### Pregunta Guiada 5
+* **Pregunta:** Si un usuario es eliminado del sistema, ¿qué debería ocurrir con los equipos que tenía asignados? Justifica la opción `ON DELETE SET NULL` utilizada en el script.
+* **Respuesta:** Los equipos no deben eliminarse del inventario físico solo porque el empleado causó baja. La opción `ON DELETE SET NULL` asegura que el campo `id_usuario` del equipo pase a ser `NULL` (quedando disponible nuevamente en almacén), conservando el activo intacto[cite: 8].
+
+### Pregunta Guiada 6
+* **Pregunta:** Observa la restricción `ON DELETE CASCADE` en la tabla Mantenimientos. ¿Qué ocurre si se elimina un equipo que tiene registros de mantenimiento? ¿Es deseable este comportamiento? Justifica.
+* **Respuesta:** Si se elimina el equipo físicamente de la base de datos, sus registros de historial de mantenimiento asociados se eliminan automáticamente en cascada[cite: 9]. Sí es un comportamiento deseable para evitar "registros huérfanos" que ocupen espacio sin hacer referencia a ningún equipo existente[cite: 9].
+
+### Pregunta Guiada 7
+* **Pregunta:** En la consulta 1 (INSERT), ¿qué pasaría si intentas insertar un `num_serie` que ya existe? ¿Qué restricción lo impide?
+* **Respuesta:** Arrojaría un error de violación de unicidad. La restricción `UNIQUE` definida en la columna `num_serie` impide que existan números de serie duplicados[cite: 8, 10].
+
+### Pregunta Guiada 8
+* **Pregunta:** En la consulta 2 (UPDATE), ¿por qué es importante usar la cláusula `WHERE`? ¿Qué ocurriría si se omite?
+* **Respuesta:** La cláusula `WHERE` delimita exactamente qué registro específico se va a modificar[cite: 10]. Si se omite, la sentencia actualizaría el departamento de *todos* los usuarios de la tabla de forma masiva y errónea[cite: 10].
+
+### Pregunta Guiada 9
+* **Pregunta:** En la consulta 7 se usa `INNER JOIN`. ¿Qué equipos NO aparecerán en el resultado? ¿Cómo modificarías la consulta para incluir también los equipos sin usuario asignado?
+* **Respuesta:** No aparecerán los equipos que tienen su `id_usuario` como `NULL` (equipos disponibles en almacén). Para incluirlos, se debe cambiar `INNER JOIN` por un `LEFT JOIN` partiendo de la tabla `Equipos`[cite: 10, 11].
+
+### Pregunta Guiada 10
+* **Pregunta:** En la consulta 9 se usa `LEFT JOIN`. ¿Qué diferencia habría si se usara `INNER JOIN`? ¿Se mostrarían los departamentos sin equipos asignados?
+* **Respuesta:** Con `INNER JOIN` solo se mostrarían los departamentos que tienen al menos un equipo asignado[cite: 11]. Con `LEFT JOIN` se muestran todos los departamentos registrados, incluso aquellos que tienen 0 equipos asignados[cite: 11].
+
+### Pregunta Guiada 11
+* **Pregunta:** Escribe una consulta adicional que muestre el costo total de mantenimientos por cada equipo (usa `SUM` y `GROUP BY`).
+* **Respuesta:**
+  ```sql
+  SELECT id_equipo, SUM(costo) AS costo_total 
+  FROM Mantenimientos 
+  GROUP BY id_equipo;

@@ -1,0 +1,34 @@
+# LabTrack Pro — Gestión de Equipos del Laboratorio de Cómputo
+
+Práctica de Laboratorio desarrollada para la materia de **Bases de Datos Relacionales** en la **Universidad Privada del Estado de México (UPEM)**.
+
+## 📋 Descripción del Sistema
+**LabTrack Pro** es un sistema automatizado para el control y seguimiento de los recursos tecnológicos de los laboratorios universitarios (PCs, laptops, monitores, proyectores y switches de red)[cite: 12]. Permite gestionar préstamos a alumnos, llevar un registro detallado de mantenimientos correctivos/preventivos y supervisar el estado operativo de cada activo[cite: 12].
+
+---
+
+##  Actores del Sistema
+1. **Administrador del Laboratorio:** Control total sobre altas, bajas, gestión de alumnos y reportes globales.
+2. **Encargado / Técnico:** Registra los préstamos, devoluciones e incidencias de mantenimiento.
+3. **Alumno Prestatario:** Consulta la disponibilidad de los equipos y el estatus de sus préstamos.
+
+---
+
+##  Modelo Entidad-Relación (MER)
+El diseño relacional se compone de 4 tablas normalizadas hasta la 3FN[cite: 12]:
+* **`ALUMNO_PRESTATARIO`**: Almacena la información de los estudiantes.
+* **`EQUIPO_LAB`**: Inventario de activos tecnológicos del laboratorio[cite: 12].
+* **`PRESTAMO`**: Tabla intermedia que gestiona la relación N:M entre alumnos y equipos.
+* **`MANTENIMIENTO`**: Historial de intervenciones técnicas asociadas a los equipos[cite: 12].
+
+---
+
+##  Consultas y Operaciones DML Principales (Retos)
+
+### 1. Equipos prestados actualmente con datos del alumno
+```sql
+SELECT e.num_inventario, e.marca, e.modelo, a.nombre AS alumno_prestatario, a.matricula, p.fecha_prestamo
+FROM EQUIPO_LAB e
+INNER JOIN PRESTAMO p ON e.id_equipo = p.id_equipo
+INNER JOIN ALUMNO_PRESTATARIO a ON p.id_alumno = a.id_alumno
+WHERE p.fecha_devolucion IS NULL;
