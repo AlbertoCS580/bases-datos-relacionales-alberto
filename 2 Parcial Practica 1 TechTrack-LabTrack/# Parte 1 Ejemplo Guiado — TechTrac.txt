@@ -1,4 +1,4 @@
-# Parte 1: Ejemplo Guiado — TechTrack Pro (Respuestas a Preguntas Guiadas)
+Parte 1: Ejemplo Guiado — TechTrack Pro 
 
 Este documento contiene las respuestas a las preguntas guiadas del análisis y diseño del sistema **TechTrack Pro** (Gestión de Activos de TI), correspondientes a la Práctica de Laboratorio de la Unidad 1.
 
