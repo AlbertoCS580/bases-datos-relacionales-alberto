@@ -1,6 +1,6 @@
-# LabTrack Pro — Gestión de Equipos del Laboratorio de Cómputo
+LabTrack Pro — Gestión de Equipos del Laboratorio de Cómputo
 
-Práctica de Laboratorio desarrollada para la materia de **Bases de Datos Relacionales** en la **Universidad Privada del Estado de México (UPEM)**.
+
 
 ##  Descripción del Sistema
 **LabTrack Pro** es un sistema automatizado para el control y seguimiento de los recursos tecnológicos de los laboratorios universitarios (PCs, laptops, monitores, proyectores y switches de red)[cite: 12]. Permite gestionar préstamos a alumnos, llevar un registro detallado de mantenimientos correctivos/preventivos y supervisar el estado operativo de cada activo[cite: 12].
